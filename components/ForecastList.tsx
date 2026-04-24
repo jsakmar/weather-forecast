@@ -1,4 +1,5 @@
 'use client'
+import { useState } from "react"
 
 function getIcon(code: number) {
   if ([32, 34].includes(code)) return "☀️"
@@ -10,53 +11,79 @@ function getIcon(code: number) {
 }
 
 export default function ForecastList({ data }: any) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
   if (!data || data.length === 0) return null
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {data.map((day: any, i: number) => (
-        <div
-          key={i}
-          className="
-            bg-white/10 backdrop-blur-xl
-            rounded-2xl p-5
-            shadow-lg border border-white/10
-            transition-all duration-300
-            hover:scale-[1.03] hover:bg-white/20
-          "
-        >
-          {/* DAY */}
-          <p className="text-sm text-slate-300">
-            {day.day}
-          </p>
+    <div className="divide-y divide-white/10">
 
-          {/* ICON + TEMP */}
-          <div className="flex items-center justify-between mt-2">
-            <span className="text-4xl">
-              {getIcon(day.icon)}
-            </span>
+      {data.map((day: any, i: number) => {
+        const isOpen = openIndex === i
 
-            <div className="text-right">
-              <p className="text-2xl font-semibold">
-                {day.max}°
-              </p>
-              <p className="text-sm text-slate-400">
-                {day.min}°
-              </p>
-            </div>
+        return (
+          <div key={i}>
+
+            {/* ROW (collapsed view) */}
+            <button
+              onClick={() => setOpenIndex(isOpen ? null : i)}
+              className="w-full flex items-center justify-between py-4 text-left"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-sm w-16 text-white/70">
+                  {day.day}
+                </span>
+                <span className="text-xl">
+                  {getIcon(day.icon)}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-4 text-sm">
+
+                <span className="text-white/60">
+                  {day.min}°
+                </span>
+
+                {/* temp range bar */}
+                <div className="w-24 h-1 bg-white/20 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-white rounded-full"
+                    style={{ width: `${Math.min(100, day.max * 3)}%` }}
+                  />
+                </div>
+
+                <span className="font-medium text-white">
+                  {day.max}°
+                </span>
+
+              </div>
+            </button>
+
+            {/* EXPANDED (full data) */}
+            {isOpen && (
+              <div className="pb-4 text-sm text-white/80 space-y-3">
+
+                <p className="text-white/70">
+                  {day.narrative}
+                </p>
+
+                <div className="grid grid-cols-2 gap-y-2 gap-x-6">
+
+                  <div>🌧 Precip: {day.precipChance}%</div>
+                  <div>💧 Humidity: {day.humidity}%</div>
+
+                  <div>💨 Wind: {day.windSpeed} km/h</div>
+                  <div>🧭 Direction: {day.windDir}</div>
+
+                </div>
+
+              </div>
+            )}
+
           </div>
+        )
+      })}
 
-          {/* DIVIDER */}
-          <div className="h-px bg-white/10 my-4" />
-
-          {/* SMALL STATS */}
-          <div className="flex justify-between text-xs text-slate-300">
-            <span>🌧 {day.precipChance}%</span>
-            <span>💨 {day.windSpeed}</span>
-            <span>💧 {day.humidity}%</span>
-          </div>
-        </div>
-      ))}
     </div>
   )
 }
