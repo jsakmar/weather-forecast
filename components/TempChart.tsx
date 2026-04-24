@@ -44,4 +44,3 @@ export default function TempChart({ data }: any) {
       </ResponsiveContainer>
     </div>
   )
-}
