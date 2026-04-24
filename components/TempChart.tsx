@@ -7,53 +7,31 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
 } from 'recharts'
 
 export default function TempChart({ data }: any) {
-  if (!data || data.length === 0) return null
+  if (!data || data.length === 0) {
+    return <div className="text-white">No data</div>
+  }
 
   return (
-    <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 text-white shadow-xl">
+    <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/10">
 
-      <h2 className="mb-4 text-lg font-semibold tracking-wide">
-        🌡 Temperature Trend
+      <h2 className="mb-4 font-semibold text-white">
+        Temperature Trend
       </h2>
 
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={250}>
         <LineChart data={data}>
-
-          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-
-          <XAxis
-            dataKey="day"
-            stroke="#ccc"
-            tick={{ fill: "#ccc" }}
-          />
-
-          <YAxis
-            stroke="#ccc"
-            tick={{ fill: "#ccc" }}
-            unit="°C"
-          />
-
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "#0f172a",
-              border: "none",
-              borderRadius: "12px",
-              color: "white",
-            }}
-            labelStyle={{ color: "#94a3b8" }}
-          />
+          <XAxis dataKey="day" stroke="#ccc" />
+          <YAxis stroke="#ccc" />
+          <Tooltip />
 
           <Line
             type="monotone"
             dataKey="max"
-            stroke="#fb923c"
+            stroke="#f97316"
             strokeWidth={3}
-            dot={{ r: 4 }}
-            name="Max °C"
           />
 
           <Line
@@ -61,10 +39,7 @@ export default function TempChart({ data }: any) {
             dataKey="min"
             stroke="#38bdf8"
             strokeWidth={3}
-            dot={{ r: 4 }}
-            name="Min °C"
           />
-
         </LineChart>
       </ResponsiveContainer>
     </div>
