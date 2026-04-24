@@ -6,15 +6,18 @@ export const dynamic = "force-dynamic"
 
 async function getData() {
   try {
-    // ✅ Works both locally and on Vercel
-    const base =
-      process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000"
-
-    const res = await fetch(`${base}/api/weather`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/weather`, {
       cache: "no-store",
     })
+
+    if (!res.ok) return []
+
+    return await res.json()
+
+  } catch {
+    return []
+  }
+}
 
     if (!res.ok) {
       console.error("API ERROR:", res.status)
