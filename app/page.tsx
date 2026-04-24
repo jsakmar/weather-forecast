@@ -34,14 +34,23 @@ export default async function Page() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 p-6 space-y-6">
+<main className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white">
 
-      {/* Chart */}
-      <TempChart data={data} />
+  <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
 
-      {/* Forecast cards */}
-      <ForecastList data={data} />
+    {/* Title */}
+    <h1 className="text-2xl font-bold tracking-wide">
+      Weather Forecast
+    </h1>
 
-    </main>
+    {/* Chart */}
+    <TempChart data={data} />
+
+    {/* Forecast */}
+    <ForecastList data={data} />
+
+  </div>
+
+</main>
   )
 }
