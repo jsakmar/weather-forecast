@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import CurrentWeather from '@/components/CurrentWeather'
-import ForecastList from '@/components/ForecastList'
-import TempChart from '@/components/TempChart'
+import CurrentWeather from '../components/CurrentWeather'
+import ForecastList from '../components/ForecastList'
+import TempChart from '../components/TempChart'
 
 export default function Home() {
   const [data, setData] = useState<any>(null)
