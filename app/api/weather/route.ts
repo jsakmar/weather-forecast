@@ -6,19 +6,20 @@ const LAT = process.env.LAT
 const LON = process.env.LON
 const STATION = process.env.STATION_ID
 
-// Browser-like headers (important for WU / Akamai)
+// Headers to mimic real browser (important for WU/Akamai)
 const headers = {
   'User-Agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36',
   'Accept': 'application/json, text/plain, */*',
   'Accept-Language': 'en-US,en;q=0.9',
+  'Referer': 'https://www.wunderground.com/',
+  'Origin': 'https://www.wunderground.com',
   'Connection': 'keep-alive'
 }
 
 export async function GET() {
-  // Debug logs (check in Vercel logs if needed)
-  console.log('ENV:', {
-    API_KEY: !!API_KEY,
+  console.log('ENV CHECK:', {
+    hasKey: !!API_KEY,
     LAT,
     LON,
     STATION
@@ -27,17 +28,11 @@ export async function GET() {
   let obsData: any = null
   let forecastData: any = null
 
-  // 🌡️ Current observations (PWS)
+  // 🌡️ OBSERVATIONS (works already)
   try {
     const obs = await axios.get(
-      'https://api.weather.com/v2/pws/observations/current',
+      `https://api.weather.com/v2/pws/observations/current?stationId=${STATION}&format=json&units=m&apiKey=${API_KEY}`,
       {
-        params: {
-          stationId: STATION,
-          format: 'json',
-          units: 'm',
-          apiKey: API_KEY
-        },
         headers,
         timeout: 5000
       }
@@ -48,29 +43,20 @@ export async function GET() {
     console.error('OBS ERROR:', e?.response?.data || e.message)
   }
 
-  // 📅 Forecast (7-day)
+  // 📅 FORECAST (fixed version)
   try {
-    const forecast = await axios.get(
-      'https://api.weather.com/v3/wx/forecast/daily/7day',
-      {
-        params: {
-          geocode: `${LAT}%2C${LON}`, // encoded comma
-          format: 'json',
-          units: 'm',
-          language: 'en-US',
-          apiKey: API_KEY
-        },
-        headers,
-        timeout: 5000
-      }
-    )
+    const forecastUrl = `https://api.weather.com/v3/wx/forecast/daily/7day?geocode=${LAT},${LON}&format=json&units=m&language=en-US&apiKey=${API_KEY}`
+
+    const forecast = await axios.get(forecastUrl, {
+      headers,
+      timeout: 5000
+    })
 
     forecastData = forecast.data
   } catch (e: any) {
     console.error('FORECAST ERROR:', e?.response?.data || e.message)
   }
 
-  // Return whatever worked (no crash)
   return NextResponse.json({
     obs: obsData,
     forecast: forecastData,
