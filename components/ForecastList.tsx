@@ -13,43 +13,50 @@ export default function ForecastList({ data }: any) {
   if (!data || data.length === 0) return null
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5">
-
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {data.map((day: any, i: number) => (
         <div
           key={i}
           className="
             bg-white/10 backdrop-blur-xl
-            rounded-2xl p-5 text-white
-            shadow-xl border border-white/10
+            rounded-2xl p-5
+            shadow-lg border border-white/10
             transition-all duration-300
-            hover:scale-105 hover:bg-white/20
+            hover:scale-[1.03] hover:bg-white/20
           "
         >
-          <h3 className="text-lg font-semibold tracking-wide">
+          {/* DAY */}
+          <p className="text-sm text-slate-300">
             {day.day}
-          </h3>
+          </p>
 
-          <div className="text-3xl my-2">
-            {getIcon(day.icon)}
+          {/* ICON + TEMP */}
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-4xl">
+              {getIcon(day.icon)}
+            </span>
+
+            <div className="text-right">
+              <p className="text-2xl font-semibold">
+                {day.max}°
+              </p>
+              <p className="text-sm text-slate-400">
+                {day.min}°
+              </p>
+            </div>
           </div>
 
-          <p className="text-xl font-bold">
-            {day.max}° / {day.min}°
-          </p>
+          {/* DIVIDER */}
+          <div className="h-px bg-white/10 my-4" />
 
-          <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-            {day.narrative}
-          </p>
-
-          <div className="text-xs mt-3 text-slate-300 space-y-1">
-            <div>🌧 {day.precipChance}%</div>
-            <div>💨 {day.windSpeed} km/h {day.windDir}</div>
-            <div>💧 {day.humidity}%</div>
+          {/* SMALL STATS */}
+          <div className="flex justify-between text-xs text-slate-300">
+            <span>🌧 {day.precipChance}%</span>
+            <span>💨 {day.windSpeed}</span>
+            <span>💧 {day.humidity}%</span>
           </div>
         </div>
       ))}
-
     </div>
   )
 }
