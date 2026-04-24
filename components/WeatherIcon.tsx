@@ -1,6 +1,6 @@
 'use client'
 
-import { getWeatherIcon } from '@/lib/weatherIcons'
+import { getWeatherIcon } from '../lib/weatherIcons'
 
 const BASE =
   "https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/all/"
