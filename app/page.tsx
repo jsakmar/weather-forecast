@@ -1,13 +1,18 @@
 import ForecastList from "../components/ForecastList"
 import TempChart from "../components/TempChart"
 
-// 🔥 prevent Next.js from trying to prerender
+// 🔥 disable static rendering (required for no-store)
 export const dynamic = "force-dynamic"
 
-// ✅ SAFE data fetch (no external URL issues)
 async function getData() {
   try {
-    const res = await fetch("http://localhost:3000/api/weather", {
+    // ✅ works both locally + on Vercel
+    const base =
+      process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000"
+
+    const res = await fetch(`${base}/api/weather`, {
       cache: "no-store",
     })
 
