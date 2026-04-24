@@ -1,32 +1,47 @@
 'use client'
 
 import {
-  Chart as ChartJS,
-  LineElement,
-  CategoryScale,
-  LinearScale,
-  PointElement
-} from 'chart.js'
-import { Line } from 'react-chartjs-2'
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement)
-
-export default function TempChart({ forecast }: any) {
-  const labels = forecast.dayOfWeek
-  const max = forecast.calendarDayTemperatureMax
-  const min = forecast.calendarDayTemperatureMin
-
-  const data = {
-    labels,
-    datasets: [
-      { label: 'Max Temp', data: max },
-      { label: 'Min Temp', data: min }
-    ]
+export default function TempChart({ data }: any) {
+  if (!data || data.length === 0) {
+    return <div className="text-white">No data</div>
   }
 
   return (
-    <div className="bg-slate-800 p-4 rounded-xl">
-      <Line data={data} />
+    <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 text-white">
+
+      <h2 className="mb-4 font-semibold">Temperature Trend</h2>
+
+      <ResponsiveContainer width="100%" height={250}>
+        <LineChart data={data}>
+
+          <XAxis dataKey="day" />
+          <YAxis />
+          <Tooltip />
+
+          <Line
+            type="monotone"
+            dataKey="max"
+            stroke="#f97316"
+            strokeWidth={3}
+          />
+
+          <Line
+            type="monotone"
+            dataKey="min"
+            stroke="#38bdf8"
+            strokeWidth={3}
+          />
+
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   )
 }
