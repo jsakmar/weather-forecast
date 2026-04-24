@@ -7,42 +7,53 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts'
+  CartesianGrid,
+} from "recharts"
 
 export default function TempChart({ data }: any) {
-  if (!data || data.length === 0) {
-    return <div className="text-white">No data</div>
-  }
-
   return (
-    <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/10">
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data}>
 
-      <h2 className="mb-4 font-semibold text-white">
-        Temperature Trend
-      </h2>
+        <CartesianGrid stroke="transparent" />
 
-      <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={data}>
-          <XAxis dataKey="day" stroke="#ccc" />
-          <YAxis stroke="#ccc" />
-          <Tooltip />
+        <XAxis
+          dataKey="day"
+          stroke="rgba(255,255,255,0.4)"
+          tick={{ fill: "rgba(255,255,255,0.6)", fontSize: 12 }}
+        />
 
-          <Line
-            type="monotone"
-            dataKey="max"
-            stroke="#f97316"
-            strokeWidth={3}
-          />
+        <YAxis
+          stroke="rgba(255,255,255,0.2)"
+          tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }}
+        />
 
-          <Line
-            type="monotone"
-            dataKey="min"
-            stroke="#38bdf8"
-            strokeWidth={3}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+        <Tooltip
+          contentStyle={{
+            background: "rgba(30,30,30,0.8)",
+            border: "none",
+            borderRadius: "10px",
+            color: "white",
+          }}
+        />
 
-    </div>
+        <Line
+          type="monotone"
+          dataKey="max"
+          stroke="#ffffff"
+          strokeWidth={3}
+          dot={false}
+        />
+
+        <Line
+          type="monotone"
+          dataKey="min"
+          stroke="rgba(255,255,255,0.4)"
+          strokeWidth={2}
+          dot={false}
+        />
+
+      </LineChart>
+    </ResponsiveContainer>
   )
 }
