@@ -1,30 +1,23 @@
 import ForecastList from "../components/ForecastList"
 import TempChart from "../components/TempChart"
 
-// 🔥 IMPORTANT: disables static generation (fixes your build error)
+// 🔥 prevent Next.js from trying to prerender
 export const dynamic = "force-dynamic"
 
+// ✅ SAFE data fetch (no external URL issues)
 async function getData() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/weather`, {
+    const res = await fetch("http://localhost:3000/api/weather", {
       cache: "no-store",
     })
-
-    if (!res.ok) return []
-
-    return await res.json()
-
-  } catch {
-    return []
-  }
-}
 
     if (!res.ok) {
       console.error("API ERROR:", res.status)
       return []
     }
 
-    return await res.json()
+    const data = await res.json()
+    return data
 
   } catch (err) {
     console.error("FETCH ERROR:", err)
@@ -35,7 +28,7 @@ async function getData() {
 export default async function Page() {
   const data = await getData()
 
-  // 🛡️ Prevent crashes
+  // 🛡️ prevent crashes
   if (!data || data.length === 0) {
     return (
       <main className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
