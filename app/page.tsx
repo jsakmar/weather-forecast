@@ -1,29 +1,18 @@
-'use client'
+import ForecastList from "@/components/ForecastList"
 
-import { useEffect, useState } from 'react'
-import CurrentWeather from '../components/CurrentWeather'
-import ForecastList from '../components/ForecastList'
-import TempChart from '../components/TempChart'
+async function getData() {
+  const res = await fetch("http://localhost:3000/api/weather", {
+    cache: "no-store",
+  })
+  return res.json()
+}
 
-export default function Home() {
-  const [data, setData] = useState<any>(null)
-
-  useEffect(() => {
-    fetch('/api/weather')
-      .then(res => res.json())
-      .then(setData)
-  }, [])
-
-  if (!data) return <div className="p-10">Loading...</div>
+export default async function Page() {
+  const data = await getData()
 
   return (
-    <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 space-y-6">
-        <CurrentWeather obs={data.obs} />
-        <TempChart forecast={data.forecast} />
-      </div>
-
-      <ForecastList forecast={data.forecast} />
-    </div>
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 to-blue-900 p-6">
+      <ForecastList data={data} />
+    </main>
   )
 }
