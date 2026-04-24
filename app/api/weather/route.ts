@@ -18,12 +18,19 @@ const headers = {
 }
 
 export async function GET() {
-  console.log('ENV CHECK:', {
-    hasKey: !!API_KEY,
-    LAT,
-    LON,
-    STATION
+  const url = `https://api.weather.com/v3/wx/forecast/daily/5day?geocode=49.219075,19.567464&format=json&units=m&language=en-US&apiKey=${process.env.WU_KEY}`
+
+  const res = await fetch(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0',
+      'Referer': 'https://www.wunderground.com/'
+    },
+    cache: 'no-store'
   })
+
+  const data = await res.json()
+  return Response.json(data)
+}
 
   let obsData: any = null
   let forecastData: any = null
