@@ -1,7 +1,7 @@
 import ForecastList from "../components/ForecastList"
 
 async function getData() {
-  const res = await fetch("http://https://weather-forecast-hazel-three.vercel.app/api/weather", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/weather`, {
     cache: "no-store",
   })
   return res.json()
