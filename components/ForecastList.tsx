@@ -1,62 +1,70 @@
-export default function WeatherCard({ d }: any) {
+'use client'
+
+const iconMap: Record<number, string> = {
+  29: "🌤️",
+  30: "🌤️",
+  33: "🌙",
+  34: "☀️",
+  26: "☁️",
+  12: "🌧️",
+  13: "🌨️",
+  4: "⛈️",
+}
+
+export default function ForecastList({ data }: any) {
+  if (!data || !Array.isArray(data)) return null
+
   return (
-    <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-white shadow-lg hover:scale-[1.03] transition-all">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
 
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">{d.day}</h3>
-        <div className="text-3xl">
-          {d.icon === 29 ? "☁️" : d.icon === 33 ? "🌤️" : "☀️"}
-        </div>
-      </div>
+      {data.map((d: any, i: number) => {
+        if (!d) return null
 
-      {/* TEMP (PRIMARY FOCUS) */}
-      <div className="mt-4">
-        <div className="text-4xl font-bold">
-          {d.max}°
-          <span className="text-lg opacity-60 ml-2">
-            {d.min}°
-          </span>
-        </div>
-      </div>
+        const icon = iconMap[d.icon] || "❓"
 
-      {/* CONDITION */}
-      <p className="text-sm opacity-80 mt-2 line-clamp-2">
-        {d.narrative}
-      </p>
+        return (
+          <div
+            key={i}
+            className="
+              bg-white/10 backdrop-blur-xl
+              rounded-2xl p-5 text-white
+              shadow-lg
+              transition-all duration-300
+              hover:scale-105 hover:bg-white/20
+            "
+          >
+            {/* Day */}
+            <h3 className="text-lg font-semibold">{d.day}</h3>
 
-      {/* DIVIDER */}
-      <div className="h-px bg-white/10 my-4" />
+            {/* Icon */}
+            <div className="text-4xl my-2">{icon}</div>
 
-      {/* METRICS GRID */}
-      <div className="grid grid-cols-2 gap-3 text-sm">
+            {/* Temps */}
+            <div className="text-sm">
+              <span className="text-orange-400 font-bold">
+                {d.max}°
+              </span>{" "}
+              /{" "}
+              <span className="text-blue-300">
+                {d.min}°
+              </span>
+            </div>
 
-        <div className="flex justify-between">
-          <span>🌧️ Rain</span>
-          <span>{d.precipChance}%</span>
-        </div>
+            {/* Description */}
+            <p className="text-xs opacity-70 mt-2">
+              {d.narrative}
+            </p>
 
-        <div className="flex justify-between">
-          <span>💨 Wind</span>
-          <span>{d.windSpeed} km/h</span>
-        </div>
+            {/* Extra data */}
+            <div className="text-xs mt-3 opacity-80 space-y-1">
+              <div>🌧 {d.precipChance ?? 0}%</div>
+              <div>💨 {d.windSpeed ?? 0} km/h {d.windDir}</div>
+              <div>💧 {d.humidity ?? 0}%</div>
+            </div>
 
-        <div className="flex justify-between">
-          <span>💧 Humidity</span>
-          <span>{d.humidity}%</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span>☀️ UV</span>
-          <span>{d.uvIndex}</span>
-        </div>
-
-      </div>
-
-      {/* WIND DIR (small detail = premium feel) */}
-      <div className="text-xs opacity-60 mt-3 text-right">
-        Wind direction: {d.windDir}
-      </div>
+          </div>
+        )
+      })}
 
     </div>
   )
