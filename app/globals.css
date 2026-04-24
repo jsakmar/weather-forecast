@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 🌍 Base reset + Apple feel */
+body {
+  @apply bg-slate-900 text-white antialiased;
+  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", system-ui, sans-serif;
+}
+
+/* 🧊 Glass card system (reusable) */
+.glass {
+  @apply bg-white/10 backdrop-blur-2xl border border-white/10 shadow-xl rounded-3xl;
+}
+
+/* 🧊 Subtle divider */
+.divider {
+  @apply border-b border-white/10;
+}
+
+/* 📊 Fix Recharts background leak */
+.recharts-wrapper,
+.recharts-surface {
+  background: transparent !important;
+}
+
+/* 📊 Tooltip polish */
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+/* ✨ Smooth interactions */
+* {
+  @apply transition-colors duration-200;
+}@tailwind base;
+@tailwind components;
+@tailwind utilities;
