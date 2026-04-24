@@ -42,5 +42,7 @@ export default function TempChart({ data }: any) {
           />
         </LineChart>
       </ResponsiveContainer>
+
     </div>
   )
+}
