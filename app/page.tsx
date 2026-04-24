@@ -10,10 +10,14 @@ async function getData() {
       { cache: "no-store" }
     )
 
-    if (!res.ok) return []
+    if (!res.ok) {
+      console.error("API ERROR:", res.status)
+      return []
+    }
 
     return await res.json()
-  } catch {
+  } catch (err) {
+    console.error("FETCH ERROR:", err)
     return []
   }
 }
