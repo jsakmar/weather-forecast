@@ -1,4 +1,4 @@
-import ForecastList from "@/components/ForecastList"
+import ForecastList from "../components/ForecastList"
 
 async function getData() {
   const res = await fetch("http://https://weather-forecast-hazel-three.vercel.app/api/weather", {
