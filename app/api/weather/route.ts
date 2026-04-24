@@ -9,7 +9,7 @@ const STATION = process.env.STATION_ID
 export async function GET() {
   try {
     const [obs, forecast] = await Promise.all([
-      axios.get(`https://api.weather.com/v2/pws/observations/current`, {
+      axios.get('https://api.weather.com/v2/pws/observations/current', {
         params: {
           stationId: STATION,
           format: 'json',
@@ -17,7 +17,7 @@ export async function GET() {
           apiKey: API_KEY
         }
       }),
-      axios.get(`https://api.weather.com/v3/wx/forecast/daily/7day`, {
+      axios.get('https://api.weather.com/v3/wx/forecast/daily/7day', {
         params: {
           geocode: `${LAT},${LON}`,
           format: 'json',
@@ -32,16 +32,16 @@ export async function GET() {
       obs: obs.data,
       forecast: forecast.data
     })
-  } catch (e: any) {
-  console.error('API ERROR:', e?.response?.data || e.message)
 
-  return NextResponse.json(
-    {
-      error: true,
-      message: e?.response?.data || e.message
-    },
-    { status: 500 }
-  )
-}
+  } catch (e: any) {
+    console.error('API ERROR:', e?.response?.data || e.message)
+
+    return NextResponse.json(
+      {
+        error: true,
+        message: e?.response?.data || e.message
+      },
+      { status: 500 }
+    )
   }
 }
