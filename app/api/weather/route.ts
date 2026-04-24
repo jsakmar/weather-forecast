@@ -32,7 +32,16 @@ export async function GET() {
       obs: obs.data,
       forecast: forecast.data
     })
-  } catch (e) {
-    return NextResponse.json({ error: 'Failed to fetch weather' }, { status: 500 })
+  } catch (e: any) {
+  console.error('API ERROR:', e?.response?.data || e.message)
+
+  return NextResponse.json(
+    {
+      error: true,
+      message: e?.response?.data || e.message
+    },
+    { status: 500 }
+  )
+}
   }
 }
