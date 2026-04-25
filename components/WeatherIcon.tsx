@@ -14,9 +14,10 @@ export default function WeatherIcon({
   return (
     <img
       src={`${ICON_BASE}${iconCode}.png`}
+      alt="weather"
       width={size}
       height={size}
-      alt="weather"
+      style={{ filter: 'brightness(0) invert(1)' }} // keeps your white theme
     />
   )
 }
