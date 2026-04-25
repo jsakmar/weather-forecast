@@ -31,23 +31,30 @@ export default async function Page() {
   const globalMax = Math.max(...forecast.map((d: any) => d.max ?? 0), 1)
 
   return (
-    <main className="max-w-sm mx-auto mt-6 p-4 rounded-2xl bg-gradient-to-b from-[#0f172a] to-[#1e3a8a] text-white space-y-4 shadow-xl">
+    <main className="max-w-xs mx-auto mt-6 p-4 rounded-2xl bg-gradient-to-b from-[#0f172a] to-[#1e3a8a] text-white space-y-3 shadow-xl">
 
-      {/* 🔹 CURRENT (tight) */}
-      <div className="text-center">
-        <div className="text-4xl font-light leading-none">
-          {current.temp}°
+      {/* 🔹 TOP ROW (sunrise - temp - sunset aligned) */}
+      <div className="flex items-center justify-between text-xs opacity-70">
+
+        <div className="text-left">
+          <div className="opacity-60">Sunrise</div>
+          <div>06:12</div>
         </div>
 
-        <div className="text-xs opacity-60 mt-1">
-          Feels {current.feels}° • {current.humidity}% • {current.wind} km/h
+        <div className="text-center">
+          <div className="text-4xl font-light leading-none">
+            {current.temp}°
+          </div>
+          <div className="text-[10px] opacity-60 mt-1">
+            Feels {current.feels}° • {current.humidity}% • {current.wind} km/h
+          </div>
         </div>
-      </div>
 
-      {/* 🔹 SUN (informational only) */}
-      <div className="flex justify-between text-xs opacity-60">
-        <div>Sunrise 06:12</div>
-        <div>Sunset 18:45</div>
+        <div className="text-right">
+          <div className="opacity-60">Sunset</div>
+          <div>18:45</div>
+        </div>
+
       </div>
 
       {/* 🔹 FORECAST */}
