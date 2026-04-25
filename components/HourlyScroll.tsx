@@ -2,37 +2,22 @@
 
 import WeatherIcon from '@/components/WeatherIcon'
 
-export default function HourlyScroll({
-  hours,
-}: {
-  hours: any[]
-}) {
-  if (!hours || hours.length === 0) return null
-
+export default function HourlyScroll({ hours }: any) {
   return (
-    <div className="overflow-x-auto flex gap-4 py-4">
-      {hours.map((h, i) => (
-        <div
-          key={i}
-          className="flex flex-col items-center min-w-[70px] bg-white/5 rounded-xl p-3"
-        >
-          {/* Time */}
-          <span className="text-xs text-white/60">
-            {h.time}
-          </span>
+    <div className="overflow-x-auto flex gap-4 py-4 text-white">
+      {hours.map((h: any, i: number) => (
+        <div key={i} className="min-w-[70px] flex flex-col items-center">
+          <span>{h.time}</span>
+          <WeatherIcon iconCode={h.iconCode} size={32} />
+          <span>{h.temp}°</span>
 
-          {/* ✅ FIXED ICON */}
-          <WeatherIcon iconCode={h.iconCode} size={40} />
-
-          {/* Temp */}
-          <span className="text-sm font-medium">
-            {h.temp}°
-          </span>
-
-          {/* Precip */}
-          <span className="text-xs text-blue-300">
-            {h.precip ?? 0}%
-          </span>
+          {/* precipitation mini bar */}
+          <div className="w-full h-1 bg-white/10 mt-2 relative">
+            <div
+              className="absolute bg-blue-400 h-1"
+              style={{ width: `${h.precip}%` }}
+            />
+          </div>
         </div>
       ))}
     </div>
