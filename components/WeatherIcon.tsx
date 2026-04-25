@@ -3,15 +3,19 @@
 import { getWeatherIcon } from '@/lib/weatherIcons'
 
 export default function WeatherIcon({
+  condition,
   iconCode,
   size = 40,
 }: {
+  condition?: string
   iconCode?: number
   size?: number
 }) {
+  const src = getWeatherIcon({ condition, iconCode })
+
   return (
     <img
-      src={getWeatherIcon(iconCode)}
+      src={src}
       width={size}
       height={size}
       alt="weather"
