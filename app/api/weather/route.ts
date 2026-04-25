@@ -1,36 +1,37 @@
-// /app/api/weather/route.ts
-
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const API_KEY = process.env.WEATHER_API_KEY
-    const LOCATION = 'London' // change or parametrize later
+    const API_KEY = process.env.WU_API_KEY
+    const LAT = process.env.LAT
+    const LON = process.env.LON
 
+    // 🔹 WU 5-day forecast endpoint
     const res = await fetch(
-      `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${LOCATION}&days=5`,
+      `https://api.weather.com/v3/wx/forecast/daily/5day?geocode=${LAT},${LON}&format=json&units=m&language=en-US&apiKey=${API_KEY}`,
       { cache: 'no-store' }
     )
 
     if (!res.ok) {
-      throw new Error('Weather API failed')
+      throw new Error('WU API failed')
     }
 
     const data = await res.json()
 
-    // 🔥 Normalize to YOUR UI format
-    const forecast = data.forecast.forecastday.map((d: any) => ({
-      day: new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }),
-      narrative: d.day.condition.text,
-      min: Math.round(d.day.mintemp_c),
-      max: Math.round(d.day.maxtemp_c),
-      precip: Math.round(d.day.daily_chance_of_rain || 0),
+    // 🔥 Normalize to your UI
+    const forecast = data.dayOfWeek.map((day: string, i: number) => ({
+      day: day.slice(0, 3),
+      narrative: data.narrative[i],
+      min: data.temperatureMin[i],
+      max: data.temperatureMax[i],
+      precip: data.daypart?.[0]?.precipChance?.[i] ?? 0,
+      iconCode: data.daypart?.[0]?.iconCode?.[i],
     }))
 
     return NextResponse.json({ forecast })
 
   } catch (error) {
-    console.error('Weather API error:', error)
+    console.error('WU API error:', error)
 
     return NextResponse.json(
       { error: 'Failed to fetch weather' },
