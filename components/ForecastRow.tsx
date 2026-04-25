@@ -13,38 +13,39 @@ export default function ForecastRow({
 }) {
   const min = day?.min ?? 0
   const max = day?.max ?? 0
+  const precip = day?.precip ?? 0
 
   const range = globalMax - globalMin || 1
-
   const left = ((min - globalMin) / range) * 100
   const width = ((max - min) / range) * 100
 
   return (
-    <div className="flex items-center justify-between bg-white/5 p-4 rounded-xl">
-      {/* Day */}
-      <div className="w-10">{day?.day}</div>
+    <div className="flex items-center gap-2 text-sm py-1.5">
 
-      {/* Icon */}
+      {/* DAY */}
+      <div className="w-8 opacity-80">{day.day}</div>
+
+      {/* ICON */}
       <WeatherIcon
-        condition={day?.narrative}
-        iconCode={day?.iconCode}
-        size={28}
+        condition={day.narrative}
+        iconCode={day.iconCode}
+        size={20}
       />
 
-      {/* Text */}
-      <div className="flex-1 px-3 text-sm opacity-80 truncate">
-        {day?.narrative}
+      {/* PRECIP (important → visible) */}
+      <div className="w-10 text-blue-400 text-xs text-center font-medium">
+        {precip > 0 ? `${precip}%` : ''}
       </div>
 
       {/* MIN */}
-      <div className="w-10 text-blue-300 text-right">
+      <div className="w-8 text-blue-300 text-right">
         {min}°
       </div>
 
-      {/* BAR */}
-      <div className="flex-1 mx-3 h-2 bg-white/10 rounded-full relative">
+      {/* RANGE BAR */}
+      <div className="flex-1 h-[3px] bg-white/10 rounded-full relative">
         <div
-          className="absolute h-2 rounded-full"
+          className="absolute h-[3px] rounded-full"
           style={{
             left: `${left}%`,
             width: `${width}%`,
@@ -55,7 +56,7 @@ export default function ForecastRow({
       </div>
 
       {/* MAX */}
-      <div className="w-10 text-orange-300 text-right">
+      <div className="w-8 text-orange-300 text-right font-medium">
         {max}°
       </div>
     </div>
