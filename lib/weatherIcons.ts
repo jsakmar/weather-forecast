@@ -1,44 +1,62 @@
-// /lib/weatherIcons.ts
+export function getLottieUrl(iconCode?: number): string {
+  if (!iconCode) return fallback
 
-export function getWeatherIcon(
-  condition: string,
-  isNight?: boolean
-) {
-  const c = condition?.toLowerCase() || ""
+  // ☀️ Clear / Sunny
+  if ([32, 34, 36].includes(iconCode)) return sun
 
-  // 🌙 NIGHT variants
-  if (isNight) {
-    if (c.includes('partly')) return 'partly-cloudy-night.svg'
-    if (c.includes('cloud')) return 'cloudy-night.svg'
-    if (c.includes('rain') || c.includes('drizzle')) return 'rain-night.svg'
-    if (c.includes('storm') || c.includes('thunder')) return 'thunderstorms-night.svg'
-    if (c.includes('snow')) return 'snow-night.svg'
-    if (c.includes('fog') || c.includes('mist')) return 'fog-night.svg'
-    return 'clear-night.svg'
-  }
+  // 🌤 Partly cloudy
+  if ([30, 44].includes(iconCode)) return partly
 
-  // ☀️ DAY variants
-  if (c.includes('clear') || c.includes('sun')) return 'clear-day.svg'
-  if (c.includes('partly')) return 'partly-cloudy-day.svg'
-  if (c.includes('cloud')) return 'cloudy.svg'
+  // ☁️ Cloudy / Overcast
+  if ([26, 28].includes(iconCode)) return cloud
 
-  // 🌧 precipitation
-  if (c.includes('drizzle')) return 'drizzle.svg'
-  if (c.includes('rain')) return 'rain.svg'
+  // 🌧 Rain / Drizzle
+  if ([9, 10, 11, 12, 40].includes(iconCode)) return rain
 
-  // ⛈ storms
-  if (c.includes('storm') || c.includes('thunder')) return 'thunderstorms.svg'
+  // ⛈ Thunderstorm
+  if ([3, 4, 37, 38, 39].includes(iconCode)) return storm
 
-  // ❄️ snow
-  if (c.includes('snow')) return 'snow.svg'
+  // ❄️ Snow / Ice
+  if ([5, 6, 7, 13, 14, 15, 16, 41, 42, 43].includes(iconCode))
+    return snow
 
-  // 🌫 atmosphere
-  if (c.includes('fog') || c.includes('mist')) return 'fog.svg'
-  if (c.includes('haze')) return 'haze.svg'
+  // 🌬 Wind / Breezy
+  if ([24].includes(iconCode)) return wind
 
-  // 💨 wind
-  if (c.includes('wind')) return 'wind.svg'
-
-  // fallback
-  return 'cloudy.svg'
+  return fallback
 }
+
+/* =========================
+   🎬 LOTTIE CDN ANIMATIONS
+   ========================= */
+
+// ☀️ Sun
+const sun =
+  'https://assets10.lottiefiles.com/packages/lf20_jmBauI.json'
+
+// 🌤 Partly cloudy
+const partly =
+  'https://assets2.lottiefiles.com/packages/lf20_HflU56.json'
+
+// ☁️ Cloud
+const cloud =
+  'https://assets9.lottiefiles.com/packages/lf20_XkF78Y.json'
+
+// 🌧 Rain
+const rain =
+  'https://assets2.lottiefiles.com/packages/lf20_t24tpvcu.json'
+
+// ⛈ Storm
+const storm =
+  'https://assets2.lottiefiles.com/packages/lf20_qp1q7mct.json'
+
+// ❄️ Snow
+const snow =
+  'https://assets2.lottiefiles.com/packages/lf20_Stt1Rz.json'
+
+// 🌬 Wind
+const wind =
+  'https://assets2.lottiefiles.com/packages/lf20_9cyyl8i7.json'
+
+// fallback (safe default)
+const fallback = cloud
