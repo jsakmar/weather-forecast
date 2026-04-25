@@ -1,62 +1,46 @@
-export function getLottieUrl(iconCode?: number): string {
-  if (!iconCode) return fallback
+const BASE = 'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/all/'
 
-  // ☀️ Clear / Sunny
-  if ([32, 34, 36].includes(iconCode)) return sun
+// 🔹 TEXT → ICON (your original working mapping)
+export function getWeatherIconFromCondition(condition: string) {
+  const c = condition.toLowerCase()
 
-  // 🌤 Partly cloudy
-  if ([30, 44].includes(iconCode)) return partly
+  if (c.includes('clear') || c.includes('sun')) return 'clear-day.svg'
+  if (c.includes('partly')) return 'partly-cloudy-day.svg'
+  if (c.includes('cloud')) return 'cloudy.svg'
+  if (c.includes('rain') || c.includes('drizzle')) return 'rain.svg'
+  if (c.includes('storm') || c.includes('thunder')) return 'thunderstorms.svg'
+  if (c.includes('snow')) return 'snow.svg'
+  if (c.includes('wind')) return 'wind.svg'
 
-  // ☁️ Cloudy / Overcast
-  if ([26, 28].includes(iconCode)) return cloud
-
-  // 🌧 Rain / Drizzle
-  if ([9, 10, 11, 12, 40].includes(iconCode)) return rain
-
-  // ⛈ Thunderstorm
-  if ([3, 4, 37, 38, 39].includes(iconCode)) return storm
-
-  // ❄️ Snow / Ice
-  if ([5, 6, 7, 13, 14, 15, 16, 41, 42, 43].includes(iconCode))
-    return snow
-
-  // 🌬 Wind / Breezy
-  if ([24].includes(iconCode)) return wind
-
-  return fallback
+  return 'cloudy.svg'
 }
 
-/* =========================
-   🎬 LOTTIE CDN ANIMATIONS
-   ========================= */
+// 🔹 ICON CODE → fallback (WU)
+export function getWeatherIconFromCode(iconCode?: number) {
+  if (!iconCode) return `${BASE}cloudy.svg`
 
-// ☀️ Sun
-const sun =
-  'https://assets10.lottiefiles.com/packages/lf20_jmBauI.json'
+  // minimal mapping (keep simple)
+  if ([32, 34].includes(iconCode)) return `${BASE}clear-day.svg`
+  if ([30].includes(iconCode)) return `${BASE}partly-cloudy-day.svg`
+  if ([26].includes(iconCode)) return `${BASE}cloudy.svg`
+  if ([12, 11].includes(iconCode)) return `${BASE}rain.svg`
+  if ([4].includes(iconCode)) return `${BASE}thunderstorms.svg`
+  if ([16].includes(iconCode)) return `${BASE}snow.svg`
 
-// 🌤 Partly cloudy
-const partly =
-  'https://assets2.lottiefiles.com/packages/lf20_HflU56.json'
+  return `${BASE}cloudy.svg`
+}
 
-// ☁️ Cloud
-const cloud =
-  'https://assets9.lottiefiles.com/packages/lf20_XkF78Y.json'
+// 🔥 MAIN (this is what everything uses)
+export function getWeatherIcon({
+  condition,
+  iconCode,
+}: {
+  condition?: string
+  iconCode?: number
+}) {
+  if (condition) {
+    return BASE + getWeatherIconFromCondition(condition)
+  }
 
-// 🌧 Rain
-const rain =
-  'https://assets2.lottiefiles.com/packages/lf20_t24tpvcu.json'
-
-// ⛈ Storm
-const storm =
-  'https://assets2.lottiefiles.com/packages/lf20_qp1q7mct.json'
-
-// ❄️ Snow
-const snow =
-  'https://assets2.lottiefiles.com/packages/lf20_Stt1Rz.json'
-
-// 🌬 Wind
-const wind =
-  'https://assets2.lottiefiles.com/packages/lf20_9cyyl8i7.json'
-
-// fallback (safe default)
-const fallback = cloud
+  return getWeatherIconFromCode(iconCode)
+}
