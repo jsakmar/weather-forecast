@@ -6,29 +6,55 @@ export async function GET() {
     const LAT = process.env.LAT
     const LON = process.env.LON
 
-    // 🔹 WU 5-day forecast endpoint
-    const res = await fetch(
+    // DAILY
+    const dailyRes = await fetch(
       `https://api.weather.com/v3/wx/forecast/daily/5day?geocode=${LAT},${LON}&format=json&units=m&language=en-US&apiKey=${API_KEY}`,
       { cache: 'no-store' }
     )
 
-    if (!res.ok) {
-      throw new Error('WU API failed')
-    }
+    // HOURLY
+    const hourlyRes = await fetch(
+      `https://api.weather.com/v3/wx/forecast/hourly/24hour?geocode=${LAT},${LON}&format=json&units=m&language=en-US&apiKey=${API_KEY}`,
+      { cache: 'no-store' }
+    )
 
-    const data = await res.json()
+    // CURRENT
+    const currentRes = await fetch(
+      `https://api.weather.com/v3/wx/observations/current?geocode=${LAT},${LON}&format=json&units=m&language=en-US&apiKey=${API_KEY}`,
+      { cache: 'no-store' }
+    )
 
-    // 🔥 Normalize to your UI
-    const forecast = data.dayOfWeek.map((day: string, i: number) => ({
-      day: day.slice(0, 3),
-      narrative: data.narrative[i],
-      min: data.temperatureMin[i],
-      max: data.temperatureMax[i],
-      precip: data.daypart?.[0]?.precipChance?.[i] ?? 0,
-      iconCode: data.daypart?.[0]?.iconCode?.[i],
+    if (!dailyRes.ok) throw new Error('Daily failed')
+    if (!hourlyRes.ok) throw new Error('Hourly failed')
+    if (!currentRes.ok) throw new Error('Current failed')
+
+    const daily = await dailyRes.json()
+    const hourly = await hourlyRes.json()
+    const current = await currentRes.json()
+
+    // ✅ SAFE forecast mapping
+    const forecast = (daily.dayOfWeek || []).map((day: string, i: number) => ({
+      day: day?.slice(0, 3),
+      narrative: daily.narrative?.[i] ?? '',
+      min: daily.temperatureMin?.[i] ?? 0,
+      max: daily.temperatureMax?.[i] ?? 0,
+      precip: daily.daypart?.[0]?.precipChance?.[i] ?? 0,
+      iconCode: daily.daypart?.[0]?.iconCode?.[i] ?? null,
     }))
 
-    return NextResponse.json({ forecast })
+    // ✅ SIMPLE hourly mapping
+    const hourlyData = (hourly.validTimeLocal || []).slice(0, 24).map((t: string, i: number) => ({
+      time: t,
+      temp: hourly.temperature?.[i],
+      precip: hourly.precipChance?.[i],
+      wind: hourly.windSpeed?.[i],
+    }))
+
+    return NextResponse.json({
+      current,
+      hourly: hourlyData,
+      forecast,
+    })
 
   } catch (error) {
     console.error('WU API error:', error)
