@@ -1,42 +1,19 @@
 'use client'
 
-const BASE =
-  'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/all/'
-
-function mapIcon(condition: string, isNight?: boolean) {
-  const c = condition.toLowerCase()
-
-  if (isNight) {
-    if (c.includes('clear')) return 'clear-night.svg'
-    if (c.includes('partly')) return 'partly-cloudy-night.svg'
-    return 'cloudy.svg'
-  }
-
-  if (c.includes('clear') || c.includes('sun')) return 'clear-day.svg'
-  if (c.includes('partly')) return 'partly-cloudy-day.svg'
-  if (c.includes('cloud')) return 'cloudy.svg'
-  if (c.includes('rain') || c.includes('drizzle')) return 'rain.svg'
-  if (c.includes('storm') || c.includes('thunder')) return 'thunderstorms.svg'
-  if (c.includes('snow')) return 'snow.svg'
-  if (c.includes('wind')) return 'wind.svg'
-
-  return 'cloudy.svg'
-}
+const ICON_BASE = 'https://twcapi.co/TWCICON/'
 
 export default function WeatherIcon({
-  condition,
-  isNight,
-  size = 40,
+  iconCode,
+  size = 48,
 }: {
-  condition: string
-  isNight?: boolean   // ✅ ADD THIS
+  iconCode?: number
   size?: number
 }) {
-  const icon = mapIcon(condition, isNight)
+  if (!iconCode) return null
 
   return (
     <img
-      src={`${BASE}${icon}`}
+      src={`${ICON_BASE}${iconCode}.png`}
       width={size}
       height={size}
       alt="weather"
