@@ -1,6 +1,6 @@
 'use client'
 
-const ICON_BASE = 'https://twcapi.co/TWCICON/'
+const BASE = 'https://twcapi.co/TWCICON/'
 
 export default function WeatherIcon({
   iconCode,
@@ -13,11 +13,11 @@ export default function WeatherIcon({
 
   return (
     <img
-      src={`${ICON_BASE}${iconCode}.png`}
-      alt="weather"
+      src={`${BASE}${iconCode}.png`}
       width={size}
       height={size}
-      style={{ filter: 'brightness(0) invert(1)' }} // keeps your white theme
+      alt=""
+      style={{ filter: 'brightness(0) invert(1)' }}
     />
   )
 }
