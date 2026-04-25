@@ -1,10 +1,14 @@
 'use client'
 
-import { LineChart, Line, ResponsiveContainer } from 'recharts'
+import {
+  LineChart,
+  Line,
+  ResponsiveContainer,
+} from 'recharts'
 
 export default function TempChart({ data }: any) {
   return (
-    <div className="h-32 mt-6">
+    <div className="h-32 mt-8">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <Line
