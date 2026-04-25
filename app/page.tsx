@@ -2,9 +2,9 @@ import RadarLite from '@/components/RadarLite'
 import SunriseSunset from '@/components/SunriseSunset'
 
 export default async function Page() {
-  const data = await fetch(process.env.NEXT_PUBLIC_URL + '/api/weather', {
-    cache: 'no-store',
-  }).then((r) => r.json())
+const data = await fetch(`${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : ''}/api/weather`, {
+  cache: 'no-store',
+}).then((r) => r.json())
 
   const current = data.current
   const forecast = data.forecast
