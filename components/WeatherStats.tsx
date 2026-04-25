@@ -2,23 +2,21 @@
 
 export default function WeatherStats({ current }: any) {
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 text-white flex justify-around">
+    <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 text-white flex justify-around shadow-xl border border-white/10">
 
-      <div>
-        <div className="text-sm opacity-70">Feels</div>
-        <div className="text-xl">{current.feels}°</div>
-      </div>
+      <Stat label="Feels" value={`${current.feels}°`} />
+      <Stat label="Humidity" value={`${current.humidity}%`} />
+      <Stat label="Wind" value={`${current.wind} km/h`} />
 
-      <div>
-        <div className="text-sm opacity-70">Humidity</div>
-        <div className="text-xl">{current.humidity}%</div>
-      </div>
+    </div>
+  )
+}
 
-      <div>
-        <div className="text-sm opacity-70">Wind</div>
-        <div className="text-xl">{current.wind} km/h</div>
-      </div>
-
+function Stat({ label, value }: any) {
+  return (
+    <div className="text-center">
+      <div className="text-xs opacity-60">{label}</div>
+      <div className="text-2xl font-light">{value}</div>
     </div>
   )
 }
