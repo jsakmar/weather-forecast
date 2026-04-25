@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <main className="p-6 max-w-md mx-auto text-white">
-      
+
       {/* CURRENT */}
       <div className="bg-white/10 rounded-2xl p-6 mb-6 text-center">
         <h1 className="text-4xl font-light">
@@ -37,6 +37,7 @@ export default function Home() {
         </p>
 
         <div className="flex justify-center my-3">
+          {/* ✅ FIXED HERE */}
           <WeatherIcon iconCode={current?.iconCode} size={72} />
         </div>
 
@@ -60,24 +61,25 @@ export default function Home() {
 
       {/* FORECAST */}
       <div className="bg-white/5 rounded-2xl p-4">
-        {forecast.map((day: any, i: number) => (
+        {forecast.map((d: any, i: number) => (
           <div
             key={i}
             className="flex items-center justify-between py-3 border-b border-white/10"
           >
-            <div className="w-12">{day.day}</div>
+            <div className="w-12">{d.day}</div>
 
-            <WeatherIcon iconCode={day.iconCode} />
+            {/* ✅ FIXED HERE */}
+            <WeatherIcon iconCode={d.iconCode} size={36} />
 
             <div className="flex-1 px-4 text-sm text-white/70">
-              {day.narrative}
+              {d.narrative}
             </div>
 
             <div className="text-right">
               <span className="mr-2 text-white/60">
-                {day.min}°
+                {d.min}°
               </span>
-              <span>{day.max}°</span>
+              <span>{d.max}°</span>
             </div>
           </div>
         ))}
