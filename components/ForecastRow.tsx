@@ -1,39 +1,34 @@
 'use client'
 
-import WeatherIcon from './WeatherIcon'
+import WeatherIcon from '@/components/WeatherIcon'
 
-export default function ForecastRow({ day }: any) {
-  const hour = new Date().getHours()
-  const isNight = hour < 6 || hour > 18
-
+export default function ForecastRow({
+  day,
+}: {
+  day: any
+}) {
   return (
-    <div className="
-      flex items-center justify-between
-      py-4 px-2
-      border-b border-white/10
-    ">
-
+    <div className="flex items-center justify-between py-3 border-b border-white/10">
+      
       {/* Day */}
-      <div className="w-14 text-sm font-medium">
+      <div className="w-12">
         {day.day}
       </div>
 
-      {/* Icon */}
-      <WeatherIcon
-        condition={day.narrative}
-        isNight={isNight}
-        size={64}
-      />
+      {/* ✅ FIXED ICON */}
+      <WeatherIcon iconCode={day.iconCode} size={48} />
 
-      {/* Description */}
-      <div className="flex-1 px-4 text-sm text-slate-300">
+      {/* Narrative */}
+      <div className="flex-1 px-4 text-sm text-white/70">
         {day.narrative}
       </div>
 
       {/* Temps */}
-      <div className="flex items-center gap-2 text-sm">
-        <span className="opacity-60">{day.min}°</span>
-        <span className="font-semibold">{day.max}°</span>
+      <div className="text-right">
+        <span className="mr-2 text-white/60">
+          {day.min}°
+        </span>
+        <span>{day.max}°</span>
       </div>
 
     </div>
