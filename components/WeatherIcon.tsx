@@ -1,30 +1,40 @@
 'use client'
 
-import Lottie from 'lottie-react'
-import { useEffect, useState } from 'react'
-import { getLottieUrl } from '@/lib/weatherIcons'
+const BASE =
+  'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/all/'
+
+function mapIcon(code?: number) {
+  if (!code) return 'cloudy.svg'
+
+  if ([32, 34, 36].includes(code)) return 'clear-day.svg'
+  if ([31, 33].includes(code)) return 'clear-night.svg'
+  if ([30, 44].includes(code)) return 'partly-cloudy-day.svg'
+  if ([29].includes(code)) return 'partly-cloudy-night.svg'
+  if ([26, 28].includes(code)) return 'cloudy.svg'
+  if ([12, 40].includes(code)) return 'rain.svg'
+  if ([3, 4, 37, 38].includes(code)) return 'thunderstorms.svg'
+  if ([13, 14, 16].includes(code)) return 'snow.svg'
+  if ([24].includes(code)) return 'wind.svg'
+
+  return 'cloudy.svg'
+}
 
 export default function WeatherIcon({
   iconCode,
-  size = 80,
+  size = 52,
 }: {
   iconCode?: number
   size?: number
 }) {
-  const [anim, setAnim] = useState<any>(null)
-
-  useEffect(() => {
-    const url = getLottieUrl(iconCode)
-    fetch(url)
-      .then(r => r.json())
-      .then(setAnim)
-  }, [iconCode])
-
-  if (!anim) return null
+  const icon = mapIcon(iconCode)
 
   return (
-    <div style={{ width: size, height: size }}>
-      <Lottie animationData={anim} loop autoplay />
-    </div>
+    <img
+      src={`${BASE}${icon}`}
+      width={size}
+      height={size}
+      alt=""
+      className="opacity-90"
+    />
   )
 }
