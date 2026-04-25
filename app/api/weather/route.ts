@@ -23,7 +23,10 @@ export async function GET() {
       `https://api.weather.com/v3/wx/observations/current?geocode=${LAT},${LON}&format=json&units=m&language=en-US&apiKey=${API_KEY}`,
       { cache: 'no-store' }
     )
-
+    console.log('DAILY:', dailyRes.status)
+    console.log('HOURLY:', hourlyRes.status)
+    console.log('CURRENT:', currentRes.status)
+    
     if (!dailyRes.ok) throw new Error('Daily failed')
     if (!hourlyRes.ok) throw new Error('Hourly failed')
     if (!currentRes.ok) throw new Error('Current failed')
