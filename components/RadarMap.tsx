@@ -9,8 +9,10 @@ export default function RadarMap() {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (!ref.current) return
+
     const map = new mapboxgl.Map({
-      container: ref.current!,
+      container: ref.current,
       style: 'mapbox://styles/mapbox/dark-v11',
       center: [19.56, 49.21],
       zoom: 6,
@@ -20,6 +22,9 @@ export default function RadarMap() {
   }, [])
 
   return (
-    <div className="h-64 mt-6 rounded-2xl overflow-hidden" ref={ref} />
+    <div
+      ref={ref}
+      className="h-64 mt-8 rounded-2xl overflow-hidden"
+    />
   )
 }
