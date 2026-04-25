@@ -1,50 +1,39 @@
+// /app/api/weather/route.ts
+
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const lat = 49.219075
-    const lon = 19.567464
-    const key = process.env.WU_KEY!
+    const API_KEY = process.env.WEATHER_API_KEY
+    const LOCATION = 'London' // change or parametrize later
 
-    const url = `https://api.weather.com/v3/wx/forecast/daily/5day?geocode=${lat},${lon}&format=json&units=m&language=en-US&apiKey=${key}`
+    const res = await fetch(
+      `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${LOCATION}&days=5`,
+      { cache: 'no-store' }
+    )
 
-    const res = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0',
-        'Referer': 'https://www.wunderground.com/',
-      },
-      cache: 'no-store',
-    })
+    if (!res.ok) {
+      throw new Error('Weather API failed')
+    }
 
-    const raw = await res.json()
+    const data = await res.json()
 
-    // 🔥 CLEAN FORMAT
-const days = raw.dayOfWeek.map((day: string, i: number) => ({
-  day,
-  max: raw.calendarDayTemperatureMax[i],
-  min: raw.calendarDayTemperatureMin[i],
-  narrative: raw.narrative[i],
+    // 🔥 Normalize to YOUR UI format
+    const forecast = data.forecast.forecastday.map((d: any) => ({
+      day: new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }),
+      narrative: d.day.condition.text,
+      min: Math.round(d.day.mintemp_c),
+      max: Math.round(d.day.maxtemp_c),
+      precip: Math.round(d.day.daily_chance_of_rain || 0),
+    }))
 
-  // 🌧️ precipitation
-  precipChance: raw.daypart?.[0]?.precipChance?.[i * 2 + 1] ?? null,
-  rain: raw.qpfRain?.[i] ?? 0,
+    return NextResponse.json({ forecast })
 
-  // 💨 wind
-  windSpeed: raw.daypart?.[0]?.windSpeed?.[i * 2 + 1] ?? null,
-  windDir: raw.daypart?.[0]?.windDirectionCardinal?.[i * 2 + 1] ?? null,
+  } catch (error) {
+    console.error('Weather API error:', error)
 
-  // ☀️ extras
-  humidity: raw.daypart?.[0]?.relativeHumidity?.[i * 2 + 1] ?? null,
-  uvIndex: raw.daypart?.[0]?.uvIndex?.[i * 2 + 1] ?? null,
-
-  icon: raw.daypart?.[0]?.iconCode?.[i * 2 + 1] || null,
-}))
-
-    return NextResponse.json(days)
-
-  } catch (err: any) {
     return NextResponse.json(
-      { error: err.message },
+      { error: 'Failed to fetch weather' },
       { status: 500 }
     )
   }
