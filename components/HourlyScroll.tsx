@@ -1,33 +1,40 @@
 'use client'
 
-import WeatherIcon from './WeatherIcon'
+import WeatherIcon from '@/components/WeatherIcon'
 
-type Hour = {
-  time: string
-  temp: number
-  precip: number
-  iconCode?: number
-}
+export default function HourlyScroll({
+  hours,
+}: {
+  hours: any[]
+}) {
+  if (!hours || hours.length === 0) return null
 
-export default function HourlyScroll({ data }: { data: Hour[] }) {
   return (
-    <div className="overflow-x-auto no-scrollbar py-4">
-      <div className="flex gap-6 px-2 min-w-max">
-        {data.map((h, i) => (
-          <div
-            key={i}
-            className="flex flex-col items-center text-xs text-white/80"
-          >
-            <span>{h.time}</span>
+    <div className="overflow-x-auto flex gap-4 py-4">
+      {hours.map((h, i) => (
+        <div
+          key={i}
+          className="flex flex-col items-center min-w-[70px] bg-white/5 rounded-xl p-3"
+        >
+          {/* Time */}
+          <span className="text-xs text-white/60">
+            {h.time}
+          </span>
 
-            <WeatherIcon condition={String(h.iconCode)} size={40} />
+          {/* ✅ FIXED ICON */}
+          <WeatherIcon iconCode={h.iconCode} size={40} />
 
-            <span className="text-sm font-medium">{h.temp}°</span>
+          {/* Temp */}
+          <span className="text-sm font-medium">
+            {h.temp}°
+          </span>
 
-            <span className="text-blue-300">{h.precip}%</span>
-          </div>
-        ))}
-      </div>
+          {/* Precip */}
+          <span className="text-xs text-blue-300">
+            {h.precip ?? 0}%
+          </span>
+        </div>
+      ))}
     </div>
   )
 }
