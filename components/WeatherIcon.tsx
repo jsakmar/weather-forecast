@@ -1,23 +1,30 @@
 'use client'
 
-const BASE = 'https://twcapi.co/TWCICON/'
+import Lottie from 'lottie-react'
+import { useEffect, useState } from 'react'
+import { getLottieUrl } from '@/lib/weatherIcons'
 
 export default function WeatherIcon({
   iconCode,
-  size = 48,
+  size = 80,
 }: {
   iconCode?: number
   size?: number
 }) {
-  if (!iconCode) return null
+  const [anim, setAnim] = useState<any>(null)
+
+  useEffect(() => {
+    const url = getLottieUrl(iconCode)
+    fetch(url)
+      .then(r => r.json())
+      .then(setAnim)
+  }, [iconCode])
+
+  if (!anim) return null
 
   return (
-    <img
-      src={`${BASE}${iconCode}.png`}
-      width={size}
-      height={size}
-      alt=""
-      style={{ filter: 'brightness(0) invert(1)' }}
-    />
+    <div style={{ width: size, height: size }}>
+      <Lottie animationData={anim} loop autoplay />
+    </div>
   )
 }
