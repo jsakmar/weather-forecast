@@ -1,151 +1,175 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
-const BASE =
-  "https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/all/"
+import HourlyScroll from '@/components/HourlyScroll'
+import WeatherStats from '@/components/WeatherStats'
+import WeatherIcon from '@/components/WeatherIcon'
 
-// ✅ SAFE ICON MAPPING
-function getWeatherIcon(condition: string, isNight?: boolean) {
-  const c = condition?.toLowerCase() || ""
-
-  if (isNight) {
-    if (c.includes('partly')) return 'partly-cloudy-night.svg'
-    if (c.includes('clear') || c.includes('sun')) return 'clear-night.svg'
-    return 'cloudy.svg'
-  }
-
-  if (c.includes('clear') || c.includes('sun')) return 'clear-day.svg'
-  if (c.includes('partly')) return 'partly-cloudy-day.svg'
-  if (c.includes('cloud')) return 'cloudy.svg'
-  if (c.includes('rain') || c.includes('drizzle')) return 'rain.svg'
-  if (c.includes('storm') || c.includes('thunder')) return 'thunderstorms.svg'
-  if (c.includes('snow')) return 'snow.svg'
-  if (c.includes('fog') || c.includes('mist')) return 'fog.svg'
-  if (c.includes('wind')) return 'wind.svg'
-
-  return 'cloudy.svg'
+type Day = {
+  day: string
+  narrative: string
+  min: number
+  max: number
+  precip: number
+  iconCode?: number
 }
 
-// 🧪 FALLBACK DATA (so UI ALWAYS shows)
-const mockData = [
-  { day: 'Fri', narrative: 'Partly cloudy', min: 6, max: 8, precip: 3 },
-  { day: 'Sat', narrative: 'Partly sunny', min: 4, max: 12, precip: 24 },
-  { day: 'Sun', narrative: 'Sunny', min: 2, max: 17, precip: 0 },
-  { day: 'Mon', narrative: 'Cloudy', min: 0, max: 8, precip: 10 },
-  { day: 'Tue', narrative: 'Rain', min: -2, max: 13, precip: 60 },
-  { day: 'Wed', narrative: 'Windy', min: 1, max: 14, precip: 5 },
-]
+type Hour = {
+  time: string
+  temp: number
+  precip: number
+  iconCode?: number
+  windDir?: number
+}
 
 export default function Page() {
-  const [data, setData] = useState<any[]>(mockData)
+  const [daily, setDaily] = useState<Day[]>([])
+  const [hourly, setHourly] = useState<Hour[]>([])
+  const [today, setToday] = useState<any>(null)
 
-  const hour = new Date().getHours()
-  const isNight = hour < 6 || hour > 18
-
+  // ✅ FETCH ALL DATA
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch('/api/weather')
-        const json = await res.json()
+    fetch('/api/weather/daily')
+      .then(res => res.json())
+      .then(data => setDaily(data || []))
 
-        if (json?.forecast?.length) {
-          setData(json.forecast)
-        }
-      } catch (e) {
-        console.log('Using mock data')
-      }
-    }
-    load()
+    fetch('/api/weather/hourly')
+      .then(res => res.json())
+      .then(data => setHourly(data || []))
+
+    fetch('/api/weather/today')
+      .then(res => res.json())
+      .then(setToday)
   }, [])
 
-  // 🌡 GLOBAL RANGE
-  const globalMax = Math.max(...data.map(d => d.max))
-  const globalMin = Math.min(...data.map(d => d.min))
-  const range = globalMax - globalMin
+  // ✅ CHART DATA (temp + precip)
+  const chartData = hourly.map(h => ({
+    time: h.time,
+    temp: h.temp,
+    precip: h.precip,
+  }))
 
   return (
-    <main className="
-      min-h-screen
-      bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700
-      text-white
-      p-6
-    ">
+    <main className="min-h-screen bg-gradient-to-b from-blue-900 to-blue-700 text-white p-6">
+      <div className="max-w-4xl mx-auto">
 
-      {/* HEADER */}
-      <div className="text-center mb-8">
-        <h1 className="text-5xl font-light mb-2">Weather</h1>
-        <p className="text-slate-300">Weekly forecast</p>
-      </div>
+        {/* HEADER */}
+        <h1 className="text-4xl font-light text-center mb-2">Weather</h1>
+        <p className="text-center text-white/60 mb-6">Weekly forecast</p>
 
-      {/* CARD */}
-      <div className="
-        max-w-3xl mx-auto
-        bg-white/10 backdrop-blur-xl
-        rounded-2xl
-        shadow-xl
-        border border-white/10
-        overflow-hidden
-      ">
+        {/* TODAY STATS */}
+        {today && (
+          <WeatherStats
+            feelsLike={today.feelsLike}
+            humidity={today.humidity}
+            wind={today.wind}
+          />
+        )}
 
-        {data.map((day, i) => {
-          const icon = getWeatherIcon(day.narrative, isNight)
+        {/* HOURLY SCROLL */}
+        {hourly.length > 0 && <HourlyScroll data={hourly} />}
 
-          const left = ((day.min - globalMin) / range) * 100
-          const width = ((day.max - day.min) / range) * 100
+        {/* 📈 TEMPERATURE + PRECIP CHART */}
+        <div className="bg-white/10 rounded-2xl p-4 mt-6">
+          <h2 className="text-sm text-white/70 mb-2">
+            Temperature & Precipitation
+          </h2>
 
-          return (
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart data={chartData}>
+              <XAxis dataKey="time" stroke="#ccc" />
+              
+              {/* LEFT: TEMP */}
+              <YAxis yAxisId="left" stroke="#ccc" />
+
+              {/* RIGHT: PRECIP */}
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                stroke="#38bdf8"
+              />
+
+              <Tooltip />
+
+              {/* TEMP LINE */}
+              <Line
+                yAxisId="left"
+                type="monotone"
+                dataKey="temp"
+                stroke="#ffffff"
+                strokeWidth={3}
+                dot={false}
+              />
+
+              {/* 🌧️ PRECIP LINE (THIS WAS MISSING) */}
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="precip"
+                stroke="#38bdf8"
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* 📋 DAILY FORECAST */}
+        <div className="bg-white/10 rounded-2xl mt-6 divide-y divide-white/10">
+          {daily.map((d, i) => (
             <div
               key={i}
-              className="flex items-center gap-4 px-4 py-5 border-b border-white/10"
+              className="flex items-center justify-between p-4"
             >
+              {/* LEFT */}
+              <div className="flex items-center gap-4 w-1/2">
+                <span className="w-12">{d.day}</span>
 
-              {/* DAY */}
-              <div className="w-14 text-sm">{day.day}</div>
-
-              {/* ICON */}
-              <div className="w-14 flex justify-center bg-white/10 rounded-xl p-2">
-                <img
-                  src={`${BASE}${icon}`}
-                  className="w-10 h-10 opacity-90"
-                  alt=""
+                <WeatherIcon
+                  condition={String(d.iconCode || d.narrative)}
+                  size={36}
                 />
+
+                <span className="text-white/70 truncate">
+                  {d.narrative}
+                </span>
               </div>
 
-              {/* PRECIP */}
-              <div className="w-12 text-xs text-sky-300 text-right">
-                {day.precip ?? 0}%
-              </div>
-
-              {/* TEMP BAR */}
-              <div className="flex-1 flex items-center gap-2">
-
-                <span className="text-xs opacity-60 w-8 text-right">
-                  {day.min}°
+              {/* RIGHT */}
+              <div className="flex items-center gap-4 w-1/2 justify-end">
+                <span className="text-blue-300 text-sm">
+                  {d.precip}%
                 </span>
 
-                <div className="relative flex-1 h-2 bg-white/20 rounded-full">
+                <span className="text-white/60">{d.min}°</span>
+
+                {/* RANGE BAR */}
+                <div className="w-24 h-1 bg-white/20 rounded relative">
                   <div
-                    className="absolute h-2 rounded-full bg-gradient-to-r from-blue-400 to-yellow-300"
+                    className="absolute h-1 bg-white rounded"
                     style={{
-                      left: `${left}%`,
-                      width: `${width}%`
+                      left: '20%',
+                      width: '50%',
                     }}
                   />
                 </div>
 
-                <span className="text-xs font-semibold w-8">
-                  {day.max}°
-                </span>
-
+                <span>{d.max}°</span>
               </div>
-
             </div>
-          )
-        })}
+          ))}
+        </div>
 
       </div>
-
     </main>
   )
 }
