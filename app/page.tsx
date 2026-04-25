@@ -13,27 +13,31 @@ export default function Page() {
       .then(setData)
   }, [])
 
-  if (!data) return <div className="p-10 text-white">Loading...</div>
+  if (!data)
+    return <div className="text-white p-10">Loading...</div>
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-900 to-blue-500 p-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#0f172a] via-[#1e3a8a] to-[#3b82f6] p-6">
 
       {/* HEADER */}
-      <div className="text-center text-white mb-10">
-        <h1 className="text-4xl font-light">Weather</h1>
-        <p className="opacity-70">Weekly forecast</p>
+      <div className="text-center text-white mb-12">
+        <h1 className="text-5xl font-thin tracking-wide">
+          Weather
+        </h1>
+        <p className="opacity-60 mt-2">Ultra forecast</p>
       </div>
 
       {/* CURRENT */}
       <div className="text-center text-white mb-6">
-        <div className="text-6xl">{data.current.temp}°</div>
+        <div className="text-7xl font-thin drop-shadow-lg">
+          {data.current.temp}°
+        </div>
       </div>
 
-      {/* STATS */}
       <WeatherStats current={data.current} />
 
       {/* FORECAST */}
-      <div className="mt-8 bg-white/5 backdrop-blur-lg rounded-2xl p-4">
+      <div className="mt-10 bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-2xl">
         {data.forecast.map((d: any, i: number) => (
           <ForecastRow key={i} day={d} />
         ))}
