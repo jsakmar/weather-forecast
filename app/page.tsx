@@ -1,6 +1,4 @@
 import ForecastRow from '@/components/ForecastRow'
-import SunriseSunset from '@/components/SunriseSunset'
-import Radar from '@/components/Radar'
 
 export default async function Page() {
   const base =
@@ -14,13 +12,9 @@ export default async function Page() {
     const res = await fetch(`${base}/api/weather`, {
       cache: 'no-store',
     })
-
-    if (!res.ok) throw new Error('API failed')
-
+    if (!res.ok) throw new Error()
     data = await res.json()
-  } catch (e) {
-    console.error(e)
-  }
+  } catch {}
 
   const current = data?.current ?? {
     temp: 0,
@@ -37,31 +31,27 @@ export default async function Page() {
   const globalMax = Math.max(...forecast.map((d: any) => d.max ?? 0), 1)
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#0f172a] to-[#1e3a8a] text-white p-6 space-y-6">
+    <main className="max-w-sm mx-auto mt-6 p-4 rounded-2xl bg-gradient-to-b from-[#0f172a] to-[#1e3a8a] text-white space-y-4 shadow-xl">
 
-      {/* 🔹 CURRENT (COMPACT) */}
+      {/* 🔹 CURRENT (tight) */}
       <div className="text-center">
-        <div className="text-5xl font-light">{current.temp}°</div>
-        <div className="text-xs opacity-60">
-          Feels like {current.feels}°
+        <div className="text-4xl font-light leading-none">
+          {current.temp}°
+        </div>
+
+        <div className="text-xs opacity-60 mt-1">
+          Feels {current.feels}° • {current.humidity}% • {current.wind} km/h
         </div>
       </div>
 
-      {/* 🔹 STATS */}
-      <div className="flex justify-between bg-white/10 rounded-xl px-6 py-3 text-sm backdrop-blur">
-        <div>Feels {current.feels}°</div>
-        <div>{current.humidity}%</div>
-        <div>{current.wind} km/h</div>
+      {/* 🔹 SUN (informational only) */}
+      <div className="flex justify-between text-xs opacity-60">
+        <div>Sunrise 06:12</div>
+        <div>Sunset 18:45</div>
       </div>
 
-      {/* 🔹 SUN */}
-      <SunriseSunset />
-
-      {/* 🔹 RADAR */}
-      <Radar />
-
       {/* 🔹 FORECAST */}
-      <div className="space-y-3">
+      <div className="space-y-1">
         {forecast.map((d: any, i: number) => (
           <ForecastRow
             key={i}
