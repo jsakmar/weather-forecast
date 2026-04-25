@@ -1,26 +1,24 @@
-type Props = {
-  feelsLike: number
-  humidity: number
-  wind: number
-}
+'use client'
 
-export default function WeatherStats({ feelsLike, humidity, wind }: Props) {
+export default function WeatherStats({ current }: any) {
   return (
-    <div className="grid grid-cols-3 gap-4 text-center mt-4">
+    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 text-white flex justify-around">
+
       <div>
-        <p className="text-white/60 text-xs">Feels like</p>
-        <p className="text-lg">{feelsLike}°</p>
+        <div className="text-sm opacity-70">Feels</div>
+        <div className="text-xl">{current.feels}°</div>
       </div>
 
       <div>
-        <p className="text-white/60 text-xs">Humidity</p>
-        <p className="text-lg">{humidity}%</p>
+        <div className="text-sm opacity-70">Humidity</div>
+        <div className="text-xl">{current.humidity}%</div>
       </div>
 
       <div>
-        <p className="text-white/60 text-xs">Wind</p>
-        <p className="text-lg">{wind} km/h</p>
+        <div className="text-sm opacity-70">Wind</div>
+        <div className="text-xl">{current.wind} km/h</div>
       </div>
+
     </div>
   )
 }
