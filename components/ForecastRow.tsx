@@ -20,7 +20,7 @@ export default function ForecastRow({
   const width = ((max - min) / range) * 100
 
   return (
-    <div className="flex items-center gap-2 text-sm py-1.5">
+    <div className="flex items-center gap-2 text-sm py-1">
 
       {/* DAY */}
       <div className="w-8 opacity-80">{day.day}</div>
@@ -29,21 +29,22 @@ export default function ForecastRow({
       <WeatherIcon
         condition={day.narrative}
         iconCode={day.iconCode}
-        size={20}
+        size={18}
       />
 
-      {/* PRECIP (important → visible) */}
-      <div className="w-10 text-blue-400 text-xs text-center font-medium">
-        {precip > 0 ? `${precip}%` : ''}
+      {/* PRECIP (always visible) */}
+      <div className="w-10 text-blue-400 text-[11px] text-center font-medium">
+        {precip}%
       </div>
 
       {/* MIN */}
-      <div className="w-8 text-blue-300 text-right">
+      <div className="w-8 text-blue-300 text-right text-[12px]">
         {min}°
       </div>
 
-      {/* RANGE BAR */}
-      <div className="flex-1 h-[3px] bg-white/10 rounded-full relative">
+      {/* BAR (polished) */}
+      <div className="flex-1 h-[3px] bg-white/10 rounded-full relative overflow-hidden">
+
         <div
           className="absolute h-[3px] rounded-full"
           style={{
@@ -51,12 +52,14 @@ export default function ForecastRow({
             width: `${width}%`,
             background:
               'linear-gradient(90deg,#60a5fa,#22c55e,#f59e0b)',
+            boxShadow: '0 0 6px rgba(255,255,255,0.15)',
           }}
         />
+
       </div>
 
       {/* MAX */}
-      <div className="w-8 text-orange-300 text-right font-medium">
+      <div className="w-8 text-orange-300 text-right text-[12px] font-medium">
         {max}°
       </div>
     </div>
