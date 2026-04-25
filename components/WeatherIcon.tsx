@@ -1,7 +1,11 @@
 'use client'
 
-const BASE =
-  'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/all/'
+const BASE = 'https://twcapi.co/TWCICON/'
+
+export function getWeatherIcon(iconCode?: number) {
+  if (!iconCode) return `${BASE}na.png`
+  return `${BASE}${iconCode}.png`
+}
 
 function mapIcon(code?: number) {
   if (!code) return 'cloudy.svg'
